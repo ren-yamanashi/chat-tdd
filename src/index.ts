@@ -1,24 +1,26 @@
 import inquirer from "inquirer";
 import fs from "fs";
 import path from "path";
-import { Configuration, OpenAIApi } from "openai";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { Command } from "commander";
+import { Configuration, OpenAIApi } from "openai";
+// import { generateTestCases } from "./createTest/parseTestCases";
 
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 const program = new Command();
 program.version("0.0.1");
 
-/** chatGPT */
-const configuration = new Configuration({
+dotenv.config();
+export const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY as string,
 });
-const openai = new OpenAIApi(configuration);
+export const openai = new OpenAIApi(configuration);
 
-async function chatGPT(input: string): Promise<string> {
+export const chatGPT = async (input: string): Promise<string> => {
   const response = await openai.createCompletion({
     model: "text-davinci-003",
     prompt: input,
@@ -32,7 +34,7 @@ async function chatGPT(input: string): Promise<string> {
     .map((choice) => choice.text)
     .join("\n");
   return concatenatedResponses;
-}
+};
 
 /**
  * Create Template `.md` file
@@ -103,76 +105,125 @@ case1: ""
 
 /**
  * run tdd
+ * 1. select testPackage
+ * 2. select markdownFile #TODO: コマンドでパスを渡す
+ * 3. send prompt for ChatGPT
+ * 4. refactoring loop
+ * 5. createTestCode
+ * 6. select output directory (testCode) #TODO: 出力先は一意のディレクトリで良い
+ * 7. execution test
+ * 8.
  */
 
 /**
- * 1. sendChatGPT
+ * 1. select testPackage
  */
-async function getMarkdownFile(directory: string): Promise<string[]> {
-  const files = await fs.promises.readdir(directory);
-  return files.filter((file) => path.extname(file) === ".md");
-}
-
-async function readMarkdownFile(filePath: string): Promise<any> {
-  const fileContent = await fs.promises.readFile(filePath, "utf8");
-  return fileContent;
-}
-
-async function selectMarkdownFile(): Promise<string> {
-  const promptsDir = path.join(
-    process.cwd(),
-    "src",
-    "chatGPT",
-    "tdd",
-    "prompts"
-  );
-  const markdownFiles = await getMarkdownFile(promptsDir);
-
-  const { selectedFile } = await inquirer.prompt([
+export const selectTestPackage = async () => {
+  const { testPackage } = await inquirer.prompt([
     {
       type: "list",
-      name: "selectedFile",
-      message: "Select the markdown file to use:",
-      choices: markdownFiles,
+      name: "testPackage",
+      message: "Select the test package to use:",
+      choices: ["jest", "vitest"],
+      default: "jest",
+    },
+  ]);
+  return testPackage;
+};
+
+export const readMarkdownFile = async (filePath: string): Promise<any> => {
+  const fileContent = await fs.promises.readFile(filePath, "utf8");
+  return fileContent;
+};
+
+const getFilesAndDirectories = async (directory: string): Promise<string[]> => {
+  const entries = await fs.promises.readdir(directory, { withFileTypes: true });
+  return entries.map((entry) => entry.name);
+};
+
+/**
+ * 2. selectMarkdownFile
+ */
+export const selectMarkdownFile = async (
+  currentDir: string = process.cwd()
+): Promise<string> => {
+  const entries = await getFilesAndDirectories(currentDir);
+
+  const { selectedEntry } = await inquirer.prompt([
+    {
+      type: "list",
+      name: "selectedEntry",
+      message: "Select a file or directory:",
+      choices: entries,
     },
   ]);
 
-  return path.join(promptsDir, selectedFile);
-}
+  const selectedEntryPath = path.join(currentDir, selectedEntry);
+  const entryStats = await fs.promises.stat(selectedEntryPath);
+
+  if (entryStats.isDirectory()) {
+    return selectMarkdownFile(selectedEntryPath);
+  } else if (path.extname(selectedEntryPath) === ".md") {
+    return selectedEntryPath;
+  } else {
+    console.log("Please select a markdown file.");
+    return selectMarkdownFile(currentDir);
+  }
+};
 
 /**
- * 2. responseChatGPT
+ * 3. selectOutputDirectory
  */
-async function saveResponseToFile(
+export const selectOutputDirectory = async (
+  currentDir: string = process.cwd()
+): Promise<string> => {
+  const entries = await getFilesAndDirectories(currentDir);
+  const choices = [
+    { name: "Select this directory", value: currentDir },
+    ...entries,
+  ];
+
+  const { selectedEntry } = await inquirer.prompt([
+    {
+      type: "list",
+      name: "selectedEntry",
+      message: "Select an output directory:",
+      choices: choices,
+    },
+  ]);
+
+  if (selectedEntry === currentDir) {
+    return currentDir;
+  } else {
+    const selectedEntryPath = path.join(currentDir, selectedEntry);
+    const entryStats = await fs.promises.stat(selectedEntryPath);
+
+    if (entryStats.isDirectory()) {
+      return selectOutputDirectory(selectedEntryPath);
+    } else {
+      console.log("Please select a directory.");
+      return selectOutputDirectory(currentDir);
+    }
+  }
+};
+
+/**
+ * 3. responseChatGPT
+ */
+export const saveResponseToFile = async (
+  outputDirectory: string,
   fileName: string,
   content: string
-): Promise<void> {
-  const responsesDir = path.join(
-    __dirname,
-    "..",
-    "src",
-    "chatGPT",
-    "tdd",
-    "responses"
-  );
-
-  try {
-    await fs.promises.access(responsesDir);
-  } catch {
-    await fs.promises.mkdir(responsesDir, { recursive: true });
-  }
-
-  const filePath = path.join(responsesDir, `${fileName}.md`);
+): Promise<void> => {
+  const filePath = path.join(outputDirectory, `${fileName}.md`);
   await fs.promises.writeFile(filePath, content);
   console.log(`Response saved to file: ${filePath}`);
-}
+};
 
-async function runRefactoringLoop(
-  initialCode: string,
-  fileName: string
-): Promise<string> {
+export const runRefactoringLoop = async (
+  initialCode: string
+): Promise<string> => {
   let chatGPTResponse = initialCode;
-  let refactoringCount = 0;
 
   while (true) {
     // Add a question to ask if the user wants to refactor the code
@@ -185,9 +236,7 @@ async function runRefactoringLoop(
       },
     ]);
 
-    if (!refactor) {
-      break;
-    }
+    if (!refactor) break;
 
     const { refactoringMethod } = await inquirer.prompt([
       {
@@ -198,33 +247,55 @@ async function runRefactoringLoop(
           input.length > 0 || "Refactoring method cannot be empty",
       },
     ]);
-
     const refactoringPrompt = `以下のコードを要件に合うようにリファクタリングしてください。\n\n${chatGPTResponse}\n\[要件]: ${refactoringMethod}`;
     chatGPTResponse = await chatGPT(refactoringPrompt);
     console.log("Refactored ChatGPT response:", chatGPTResponse);
-
-    refactoringCount += 1;
   }
-
-  await saveResponseToFile(fileName, chatGPTResponse);
   return chatGPTResponse;
-}
+};
 
-async function runTDD() {
+export const generateTestCode = async (
+  refactoredFunction: string,
+  testPackage: string,
+  markdownFileContent?: string
+): Promise<string> => {
+  const promptMarkdown = `以下の関数のテストコードを作成して下さい。\n
+  ${refactoredFunction}\n\n
+  テストパッケージには${testPackage}を用いて下さい。\n
+  また、テストケースには以下のマークダウンファイルの[TestCases]を参考にして下さい。\n
+  ${markdownFileContent}
+  `;
+
+  const prompt = promptMarkdown;
+  const testCode = await chatGPT(prompt);
+  console.log("Generated test code:", testCode);
+  return testCode;
+};
+
+export const runTDD = async () => {
   try {
+    // NOTE: testPackageの選択
+    const testPackage = await selectTestPackage();
     const filePath = await selectMarkdownFile();
     const markdownFileContent = await readMarkdownFile(filePath);
-
     let chatGPTResponse = await chatGPT(markdownFileContent);
     console.log("ChatGPT response:", chatGPTResponse);
 
     const fileName = path.basename(filePath, path.extname(filePath));
+    chatGPTResponse = await runRefactoringLoop(chatGPTResponse);
 
-    chatGPTResponse = await runRefactoringLoop(chatGPTResponse, fileName);
+    const testCode = await generateTestCode(
+      chatGPTResponse,
+      testPackage,
+      markdownFileContent
+    );
+
+    const outputDirectory = await selectOutputDirectory();
+    await saveResponseToFile(outputDirectory, fileName, chatGPTResponse);
   } catch (error) {
     console.error(error.message);
   }
-}
+};
 
 program
   .command("run-tdd")

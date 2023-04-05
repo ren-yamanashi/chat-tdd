@@ -4,7 +4,10 @@
 
 ~~~yaml
 Prompt:
-引数としてミリ秒を受け取り、それをテキストに変換する関数を作成してください。以下の分岐条件とコーディング規約に従ってください。
+- 引数としてミリ秒を受け取り、それをテキストに変換する関数を作成してください。
+- 以下の`branch condition`と`Coding convention`に従ってください。
+- `TestCases`にテストケースを示しており、`input`は引数を、`output`は戻り値を示しております。それを踏まえてテストケースを全て通過するように関数を実装して下さい。
+- テストコードを書く必要はありません。
 
 branch condition:
 - n年mヶ月ではなく、n年のみ出力
@@ -13,12 +16,13 @@ branch condition:
 - n分m秒ではなく、n分のみ出力
 - ちょうどn時間の場合は、n時間0分と出力
 - n時間m分の場合は、n時間m分と出力
+- 以下の`TestCases`のじょう
 
 Coding convention:
 - ハードコーディングは避け、変数を使用する
 - 可読性を重視してコーディングを行う
 
-[Cases]
+[TestCases]
 case1: "exactly n years"
   inputs: 
     - {
