@@ -1,17 +1,19 @@
 {
+  "include": ["src/**/*.ts", "chatTdd.config.ts"],
   "compilerOptions": {
-    "module": "ES2020",
+    "module": "ESNext",
+    "target": "ES2018",
     "esModuleInterop": true,
-    "target": "ES2020",
-    "noImplicitAny": true,
-    "moduleResolution": "node",
+    "strict": true,
+    // "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
     "sourceMap": true,
-    "outDir": "dist",
+    "rootDir": "/",
+    "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
       "*": ["node_modules/*"]
-    }
-  },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"]
+    },
+    "moduleResolution": "node"
+  }
 }

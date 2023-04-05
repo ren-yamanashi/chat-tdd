@@ -1,9 +1,6 @@
 {
   "name": "auto-tdd",
   "version": "1.0.0",
-  "main": "index.js",
-  "type": "module",
-  "license": "MIT",
   "dependencies": {
     "@types/node": "^18.15.11",
     "commander": "^10.0.0",
@@ -13,14 +10,15 @@
     "typescript": "^5.0.3"
   },
   "scripts": {
-    "build": "tsc",
-    "build-watch": "tsc --watch",
-    "start": "node dist/index.js"
-  },
+  "build": "esbuild src/index.ts --bundle --outfile=dist/index.js --platform=node --target=node16 --format=cjs",
+  "build:watch": "esbuild src/index.ts --bundle --outfile=dist/index.js --platform=node --target=node16 --format=cjs --watch",
+  "start": "node dist/index.js"
+},
   "devDependencies": {
     "@types/fs-extra": "^11.0.1",
     "@types/inquirer": "^9.0.3",
     "@types/js-yaml": "^4.0.5",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "esbuild": "^0.17.15"
   }
 }
