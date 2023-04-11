@@ -39,8 +39,7 @@ export default {
 yarn start run-tdd < your prompt filePath >
 ```
 
-5. ディレクトリ構成
-
+## ディレクトリ構成
 ```
 src
 ├── application     // 複数のサブシステムを統合し、クライアントに対して単純化されたインターフェースを提供   (物として機能)
@@ -51,3 +50,6 @@ src
 ├── interface
 └── utils           // 汎用的なコード utilsディレクトリは以下のファイルは、必ず機能ごとに分かれる
 ```
+
+## コーディング規約
+
