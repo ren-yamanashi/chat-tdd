@@ -1,5 +1,4 @@
 {
-  "include": ["src/**/*.ts", "chatTdd.config.ts"],
   "compilerOptions": {
     "module": "ESNext",
     "target": "ES2018",

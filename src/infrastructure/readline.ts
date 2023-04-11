@@ -1,5 +1,9 @@
-import { $readline } from "../plugins/readline";
+import readline from "readline";
+import container from "../container";
+container.register("readline", readline);
+const $readline = container.resolve<typeof readline>("readline");
 
+// TODO: di
 export const useReadline = () => {
   const readline = $readline.createInterface({
     input: process.stdin,

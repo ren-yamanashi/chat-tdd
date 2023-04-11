@@ -1,7 +1,7 @@
 ## References
 
-- Node.Js documents: https://nodejs.org/docs
-- chatGPT: https://openai.com
+- Node.js documents: https://nodejs.org/docs
+- OpenAI: https://openai.com
 
 ## package manager
 
@@ -37,4 +37,17 @@ export default {
 
 ```bash
 yarn start run-tdd < your prompt filePath >
+```
+
+5. ディレクトリ構成
+
+```
+src
+├── application     // 複数のサブシステムを統合し、クライアントに対して単純化されたインターフェースを提供   (物として機能)
+├── fileSystem      // ファイル関連の機能を持つ 部品として機能
+├── generateCode    // コードを生成する機能を持つ 部品として機能
+├── infrastructure 
+│   └── apis
+├── interface
+└── utils           // 汎用的なコード utilsディレクトリは以下のファイルは、必ず機能ごとに分かれる
 ```

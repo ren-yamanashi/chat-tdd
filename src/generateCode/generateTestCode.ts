@@ -1,3 +1,5 @@
+import { result } from "../utils/result";
+
 export const generateTestCode = async ({
   generateAnswer,
   refactoredCode,
@@ -18,13 +20,19 @@ export const generateTestCode = async ({
   また、テストケースには以下のマークダウンファイルの[TestCases]を参考にして下さい。\n
   ${markdownFileContent}
   `;
-  try {
-    const testCode = await generateAnswer(promptMarkdown);
-    console.log("[TestCode]\n\n", testCode);
 
-    return testCode;
-  } catch (error: any) {
-    // FIXME: throwやめる
-    throw new Error(error);
+  const { data, error } = await result<string>(() =>
+    generateAnswer(promptMarkdown)
+  );
+  console.log("[TestCode]\n\n", data);
+  if (error) {
+    console.error(error);
+    process.exit(1);
   }
+  if (!data) {
+    console.log("TestCode is not defined.");
+    process.exit(1);
+  }
+
+  return data;
 };

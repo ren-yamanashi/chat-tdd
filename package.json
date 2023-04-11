@@ -1,22 +1,23 @@
 {
   "name": "auto-tdd",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "dependencies": {
-    "@types/node": "^18.15.11",
     "commander": "^10.0.0",
     "fs-extra": "^11.1.1",
-    "openai": "^3.2.1",
-    "typescript": "^5.0.3"
+    "openai": "^3.2.1"
   },
   "scripts": {
-  "build": "esbuild src/index.ts --bundle --outfile=dist/index.js --platform=node --target=node16 --format=cjs",
-  "build:watch": "esbuild src/index.ts --bundle --outfile=dist/index.js --platform=node --target=node16 --format=cjs --watch",
-  "start": "node dist/index.js"
-},
+    "build": "esbuild src/bin.ts --bundle --outfile=dist/bin.js --platform=node --target=node16 --format=cjs",
+    "build:watch": "esbuild src/bin.ts --bundle --outfile=dist/bin.js --platform=node --target=node16 --format=cjs --watch",
+    "start": "node dist/bin.js"
+  },
   "devDependencies": {
     "@types/fs-extra": "^11.0.1",
     "@types/js-yaml": "^4.0.5",
+    "@types/node": "^18.15.11",
     "dotenv": "^16.0.3",
-    "esbuild": "^0.17.15"
+    "esbuild": "^0.17.15",
+    "typescript": "^5.0.3",
+    "vitest": "^0.29.8"
   }
 }

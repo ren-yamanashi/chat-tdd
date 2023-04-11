@@ -13,7 +13,7 @@ export const runRefactoringLoop = async ({
 }): Promise<string> => {
   try {
     while (true) {
-      const refactor = await question("Do you want to refactor? (y/N)");
+      const refactor =  await question("Do you want to refactor? (y/N)");
       if (refactor.toLocaleLowerCase() !== "y") break;
 
       const refactoringMethod = await question(
@@ -24,7 +24,7 @@ export const runRefactoringLoop = async ({
         continue;
       }
 
-      const refactoringPrompt = `以下のコードを要件に合うようにリファクタリングしてください。\n\n${chatGPTResponse}\n\[要件]: ${refactoringMethod}`;
+      const refactoringPrompt = `以下のコードを要件に合うようにリファクタリングしてください。\n\n${chatGPTResponse}\n[要件]: ${refactoringMethod}`;
 
       const load = startLoad();
       chatGPTResponse = await generateAnswer(refactoringPrompt);

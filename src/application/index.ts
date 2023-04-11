@@ -1,12 +1,12 @@
-import * as config from "../../../chatTdd.config";
-import { generateAnswer } from "../../infrastructure/apis/generateAnswer";
-import { runRefactoringLoop } from "../../modules/refactoringLoop";
-import { generateTestCode } from "../../modules/generateTestCode";
-import { saveResponseToFile } from "./saveResponseToFile";
-import { $fs } from "../../plugins/fileSystem";
-import { $path } from "../../plugins/path";
-import { useLoad } from "../../useCases/load";
-import { useReadline } from "../../infrastructure/readline";
+import * as config from "../../chatTdd.config";
+import { generateAnswer } from "../infrastructure/apis/generateAnswer";
+import { runRefactoringLoop } from "../generateCode/refactoringLoop";
+import { generateTestCode } from "../generateCode/generateTestCode";
+import { saveToFile } from "../fileSystem/saveToFile";
+import { path } from "../infrastructure/path";
+import { useLoad } from "../utils/load";
+import { useReadline } from "../infrastructure/readline";
+import { fileSystem } from "../infrastructure/fileSystem";
 
 /**
  * run tdd
@@ -25,12 +25,12 @@ export const runTDD = async (filePath: string): Promise<void> => {
     process.exit(1);
   }
   // TODO: ディレクトリでも受け取れるようにする
-  const isDirectory = (await $fs.promises.lstat(filePath)).isDirectory();
+  const isDirectory = (await fileSystem.lstat(filePath)).isDirectory();
   if (isDirectory) {
     console.error("Error: Please specify a Markdown file, not a directory.");
     process.exit(1);
   }
-  const extname = $path.extname(filePath);
+  const extname = path.extname(filePath);
   if (extname !== ".md") {
     console.error("Error: The specified file is not a Markdown file.");
     process.exit(1);
@@ -38,7 +38,7 @@ export const runTDD = async (filePath: string): Promise<void> => {
 
   try {
     /** read markdown */
-    const markdownFileContent: string = await $fs.promises.readFile(
+    const markdownFileContent: string = await fileSystem.readFile(
       filePath,
       "utf8"
     );
@@ -70,17 +70,13 @@ export const runTDD = async (filePath: string): Promise<void> => {
     load.stop(_load);
 
     /** saveResponse to file */
-    const outputDirectory = $path.resolve(config.default.outputDir);
-    const fileName = $path.basename(filePath, $path.extname(filePath));
+    const outputDirectory = path.resolve(config.default.outputDir);
+    const fileName = path.basename(filePath, path.extname(filePath));
     // TODO: エラーがreturnされた時の対応
     // NOTE: TsCode
-    await saveResponseToFile(
-      outputDirectory,
-      `${fileName}.md`,
-      chatGPTResponse
-    );
+    await saveToFile(outputDirectory, `${fileName}.md`, chatGPTResponse);
     // NOTE: TestCode
-    await saveResponseToFile(outputDirectory, `${fileName}.spec.md`, testCode);
+    await saveToFile(outputDirectory, `${fileName}.spec.md`, testCode);
 
     process.exit();
   } catch (error: any) {
