@@ -9,9 +9,9 @@
     "sourceMap": true,
     "rootDir": "/",
     "outDir": "./dist",
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "paths": {
-      "*": ["node_modules/*"]
+      "*": ["*"]
     },
     "moduleResolution": "node"
   }
