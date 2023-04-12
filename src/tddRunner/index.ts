@@ -19,7 +19,7 @@ import { readMarkdownFile } from "../tddRunner/fileSystem/readMarkdownFile";
  * 7. saveResponse to file
  */
 export const runTDD = async (filePath: string): Promise<void> => {
-  const CONFIG_FILE_PATH = "/chatTdd.config.json"
+  const CONFIG_FILE_PATH = "chatTdd.config.json"
   const readline = useReadline();
   const { load } = createLoading(
     readline.cursorToBeginning,
