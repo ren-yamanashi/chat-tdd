@@ -1,4 +1,4 @@
-import { runTDD } from "./application";
+import { runTDD } from "./tddRunner";
 
 
 const [command, filePath] = process.argv.slice(2);

@@ -1,5 +1,6 @@
 import fs from "fs";
-import { FileSystem } from "../interfaces/fileSystem";
+import { FileSystem } from "src/interfaces/fileSystem";
+
 
 export const fileSystem: FileSystem = {
   lstat: fs.promises.lstat,

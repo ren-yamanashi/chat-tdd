@@ -2,8 +2,8 @@ import * as _path from "path";
 import { Path } from "../interfaces/path";
 
 export const path: Path = {
-  extname: _path.extname,
+  extName: _path.extname,
   resolve: _path.resolve,
-  basename: _path.basename,
+  baseName: _path.basename,
   join: _path.join,
 };

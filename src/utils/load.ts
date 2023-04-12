@@ -1,30 +1,26 @@
-export const useLoad = (
+export const createLoading = (
   cursorToBeginning: () => void,
   clearCurrentLine: () => void
 ) => {
   const loadingSymbols = ["|", "/", "-", "\\"];
   let currentIndex = 0;
 
-  const start = () =>
-    setInterval(() => {
-      // カーソルを先頭に戻す
+  const load = async <T>(asyncFunc: () => Promise<T>): Promise<T> => {
+    const start = setInterval(() => {
       cursorToBeginning();
-
-      // 現在のローディングシンボルを表示
       process.stdout.write(
         `${loadingSymbols[currentIndex % loadingSymbols.length]}`
       );
-
-      // インデックスを更新
       currentIndex++;
     }, 200);
 
-  const stop = (loading: NodeJS.Timer) => {
-    clearInterval(loading);
+    const res = await asyncFunc();
+    clearInterval(start);
     clearCurrentLine();
+
+    return res;
   };
   return {
-    start,
-    stop,
+    load,
   };
 };

@@ -9,7 +9,8 @@
   "scripts": {
     "build": "esbuild src/bin.ts --bundle --outfile=dist/bin.js --platform=node --target=node16 --format=cjs",
     "build:watch": "esbuild src/bin.ts --bundle --outfile=dist/bin.js --platform=node --target=node16 --format=cjs --watch",
-    "start": "node dist/bin.js"
+    "start": "node dist/bin.js",
+    "test:unit": "export TEST_TYPE=unit && vitest run __tests__/unit/"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.1",
@@ -17,7 +18,8 @@
     "@types/node": "^18.15.11",
     "dotenv": "^16.0.3",
     "esbuild": "^0.17.15",
+    "jsdom": "^21.1.1",
     "typescript": "^5.0.3",
-    "vitest": "^0.29.8"
+    "vitest": "^0.30.1"
   }
 }

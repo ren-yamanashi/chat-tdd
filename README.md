@@ -42,7 +42,7 @@ yarn start run-tdd < your prompt filePath >
 ## ディレクトリ構成
 ```
 src
-├── application     // 複数のサブシステムを統合し、クライアントに対して単純化されたインターフェースを提供   (物として機能)
+├── facade          // 複数のサブシステムを統合し、クライアントに対して単純化されたインターフェースを提供  (物として機能)
 ├── fileSystem      // ファイル関連の機能を持つ 部品として機能
 ├── generateCode    // コードを生成する機能を持つ 部品として機能
 ├── infrastructure 

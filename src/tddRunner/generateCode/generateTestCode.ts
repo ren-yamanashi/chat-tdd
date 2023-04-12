@@ -1,4 +1,4 @@
-import { result } from "../utils/result";
+import { safeExecute } from "../../utils/safeExecute";
 
 export const generateTestCode = async ({
   generateAnswer,
@@ -6,7 +6,7 @@ export const generateTestCode = async ({
   testPackage,
   markdownFileContent,
 }: {
-  generateAnswer: (prompt: string) => Promise<string>;
+  generateAnswer: (prompt: string) => Promise<string | Error>;
   refactoredCode: string;
   testPackage: string;
   markdownFileContent?: string;
@@ -21,18 +21,24 @@ export const generateTestCode = async ({
   ${markdownFileContent}
   `;
 
-  const { data, error } = await result<string>(() =>
+  const { response, error } = await safeExecute<string | Error>(() =>
     generateAnswer(promptMarkdown)
   );
-  console.log("[TestCode]\n\n", data);
+
+  console.log("[TestCode]\n\n", response);
+
+  if (!response) {
+    console.log("TestCode is not defined.");
+    process.exit(1);
+  }
+  if (response instanceof Error) {
+    console.error(response);
+    process.exit(1);
+  }
   if (error) {
     console.error(error);
     process.exit(1);
   }
-  if (!data) {
-    console.log("TestCode is not defined.");
-    process.exit(1);
-  }
 
-  return data;
+  return response;
 };

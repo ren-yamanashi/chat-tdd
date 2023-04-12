@@ -1,0 +1,4 @@
+{
+  "testPackage": "vitest",
+  "outputDir": "examples/responses"
+}
