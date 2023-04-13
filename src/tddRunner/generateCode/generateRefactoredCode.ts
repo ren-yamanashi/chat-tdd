@@ -22,7 +22,7 @@ export const runRefactoringLoop = async ({
     );
 
     if (!refactoringMethod?.length) {
-      console.log("Refactoring method cannot be empty");
+      console.error("Refactoring method cannot be empty");
       break;
     }
 

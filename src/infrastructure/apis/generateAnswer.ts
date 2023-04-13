@@ -1,12 +1,15 @@
 import dotenv from "dotenv";
 import { OpenAIApi, Configuration } from "openai";
 import { safeExecute } from "../../utils/safeExecute";
+import { isIncludeMessage } from "src/utils/typeCheck";
+import { API } from "src/interfaces/api";
+import { container } from "src/container";
 dotenv.config();
 
-// TODO: DI
-export const generateAnswer = async (
+export const generateAnswer: API["generateAnswer"] = async (
   prompt: string
 ): Promise<string | Error> => {
+  // TODO: 実行するときに、KEYを指定するように変更
   const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY as string,
   });
@@ -28,13 +31,7 @@ export const generateAnswer = async (
   }
   if (error) {
     console.error(error);
-    if (
-      typeof error === "object" &&
-      "message" in error &&
-      typeof (error as { message: unknown }).message === "string"
-    ) {
-      return new Error((error as { message: string }).message);
-    }
+    if (isIncludeMessage(error)) return new Error(error.message);
   }
 
   const concatenatedResponses = response.data.choices
@@ -43,3 +40,5 @@ export const generateAnswer = async (
 
   return concatenatedResponses;
 };
+
+container.register("generateAnswer", generateAnswer);

@@ -1,5 +1,6 @@
 // TODO: 命名の変更
 export type Direction = -1 | 0 | 1;
+
 // NOTE: NodeJS.WritableStreamのカスタムinterface（どのプラットフォームでも使用できる形にカスタマイズ）
 // Readline.cursorToとReadline.clearLineで必要となる部分のみ定義
 export interface CustomWritableStream {

@@ -28,7 +28,7 @@ export const generateTestCode = async ({
   console.log("[TestCode]\n\n", response);
 
   if (!response) {
-    console.log("TestCode is not defined.");
+    console.error("TestCode is not defined.");
     process.exit(1);
   }
   if (response instanceof Error) {

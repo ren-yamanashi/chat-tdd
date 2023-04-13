@@ -1,9 +1,12 @@
-import { generateAnswer } from "../../infrastructure/apis/generateAnswer";
+import { container } from "src/container";
 import { safeExecute } from "../../utils/safeExecute";
+import { API } from "src/interfaces/api";
 export const generateProgramCode = async (
   load: <T>(asyncFunc: () => Promise<T>) => Promise<T>,
   contents: string
 ) => {
+  const generateAnswer =
+    container.resolve<API["generateAnswer"]>("generateAnswer");
   const { response, error } = await safeExecute<string | Error>(() =>
     load<string | Error>(() => generateAnswer(contents))
   );

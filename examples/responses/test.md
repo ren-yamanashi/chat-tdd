@@ -1,38 +1,47 @@
 
 ```typescript
-function convertMillisecondsToText(milliseconds: number): string {
-  const oneYearInMilliseconds = 31536000000;
-  const oneMonthInMilliseconds = 2678400000;
-  const oneDayInMilliseconds = 86400000;
-  const oneHourInMilliseconds = 3600000;
-  const oneMinuteInMilliseconds = 60000;
-  
-  const years = Math.floor(milliseconds / oneYearInMilliseconds);
-  const months = Math.floor((milliseconds % oneYearInMilliseconds) / oneMonthInMilliseconds);
-  const days = Math.floor((milliseconds % oneMonthInMilliseconds) / oneDayInMilliseconds);
-  const hours = Math.floor((milliseconds % oneDayInMilliseconds) / oneHourInMilliseconds);
-  const minutes = Math.floor((milliseconds % oneHourInMilliseconds) / oneMinuteInMilliseconds);
-  
-  let text = '';
+function convertMillisToText(millis: number): string {
+  // convert milliseconds to years
+  const years = Math.floor(millis / 31536000000);
+  millis %= 31536000000;
+
+  // convert milliseconds to months
+  const months = Math.floor(millis / 2678400000);
+  millis %= 2678400000;
+
+  // convert milliseconds to days
+  const days = Math.floor(millis / 86400000);
+  millis %= 86400000;
+
+  // convert milliseconds to hours
+  const hours = Math.floor(millis / 3600000);
+  millis %= 3600000;
+
+  // convert milliseconds to minutes
+  const minutes = Math.floor(millis / 60000);
+
+  let result = '';
   if (years > 0) {
-    text += `${years}年`;
+    result += `${years}年`;
   }
   if (months > 0) {
-    text += `${months}ヶ月`;
+    result += `${months}ヶ月`;
   }
   if (days > 0) {
-    text += `${days}日`;
+    result += `${days}日`;
   }
   if (hours > 0) {
-    text += `${hours}時間`;
+    result += `${hours}時間`;
+    if (minutes > 0) {
+      result += `${minutes}分`;
+    } else {
+      result += '0分';
+    }
+  } else if (minutes > 0) {
+    result += `${minutes}分`;
+  } else {
+    result += '0分';
   }
-  if (minutes > 0) {
-    text += `${minutes}分`;
-  }
-  if (minutes === 0 && hours === 0 && days === 0 && months === 0 && years === 0) {
-    text += '0分';
-  }
-  
-  return text;
+  return result;
 }
 ```

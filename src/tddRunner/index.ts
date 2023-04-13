@@ -1,4 +1,3 @@
-import { generateAnswer } from "../infrastructure/apis/generateAnswer";
 import { runRefactoringLoop } from "./generateCode/generateRefactoredCode";
 import { generateTestCode } from "./generateCode/generateTestCode";
 import { saveToFile } from "./fileSystem/saveToFile";
@@ -10,6 +9,7 @@ import { readMarkdownFile } from "../tddRunner/fileSystem/readMarkdownFile";
 import { container } from "src/container";
 import { Path } from "src/interfaces/path";
 import { useReadline } from "src/utils/readline";
+import { API } from "src/interfaces/api";
 
 /**
  * run tdd
@@ -23,6 +23,8 @@ import { useReadline } from "src/utils/readline";
 export const runTDD = async (filePath: string): Promise<void> => {
   const CONFIG_FILE_PATH = "chatTdd.config.json";
   const path = container.resolve<Path>("path");
+  const generateAnswer =
+    container.resolve<API["generateAnswer"]>("generateAnswer");
   const readline = useReadline();
   const { load } = createLoading(
     readline.cursorToBeginning,
@@ -30,44 +32,39 @@ export const runTDD = async (filePath: string): Promise<void> => {
   );
   const { testPackage, outputDir } = await readConfigFile(CONFIG_FILE_PATH);
 
-  try {
-    /** read markdown */
-    const markdownFileContent: string = await readMarkdownFile(filePath);
+  /** read markdown */
+  const markdownFileContent: string = await readMarkdownFile(filePath);
 
-    /** send prompt */
-    const programCode: string = await generateProgramCode(
-      load,
-      markdownFileContent
-    );
+  /** send prompt */
+  const programCode: string = await generateProgramCode(
+    load,
+    markdownFileContent
+  );
 
-    /** refactoring loop */
-    const refactoredCode: string = await runRefactoringLoop({
-      load,
-      question: readline.question,
+  /** refactoring loop */
+  const refactoredCode: string = await runRefactoringLoop({
+    load,
+    question: readline.question,
+    generateAnswer,
+    programCode,
+  });
+
+  /** generateTestCode */
+  const testCode: string = await load<string>(() =>
+    generateTestCode({
       generateAnswer,
-      programCode,
-    });
+      refactoredCode,
+      testPackage,
+      markdownFileContent,
+    })
+  );
 
-    /** generateTestCode */
-    const testCode: string = await load<string>(() =>
-      generateTestCode({
-        generateAnswer,
-        refactoredCode,
-        testPackage,
-        markdownFileContent,
-      })
-    );
+  /** saveResponse to file */
+  const fileName: string = path.baseName(filePath, path.extName(filePath));
+  await saveToFile(outputDir, {
+    [`${fileName}.md`]: refactoredCode,
+    [`${fileName}.spec.md`]: testCode,
+  });
 
-    /** saveResponse to file */
-    const fileName: string = path.baseName(filePath, path.extName(filePath));
-    await saveToFile(outputDir, {
-      [`${fileName}.md`]: refactoredCode,
-      [`${fileName}.spec.md`]: testCode,
-    });
-
-    process.exit();
-  } catch (error: any) {
-    console.error(`Error: ${error.message}`);
-    return;
-  }
+  process.exit();
 };

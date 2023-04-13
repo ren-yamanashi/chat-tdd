@@ -1,4 +1,4 @@
-import * as _readline from "readline";
+import * as readline from "readline";
 import {
   CustomWritableStream,
   Direction,
@@ -6,8 +6,8 @@ import {
 } from "src/interfaces/readline";
 import { container } from "../container";
 
-export const readline: Readline = {
-  createInterface: _readline.createInterface({
+export const _readline: Readline = {
+  createInterface: readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   }),
@@ -19,11 +19,11 @@ export const readline: Readline = {
     interfaceInstance.question(query, callback);
   },
   cursorTo: (stream: CustomWritableStream, x: number, y?: number) => {
-    _readline.cursorTo(stream as any, x, y);
+    readline.cursorTo(stream as any, x, y);
   },
   clearLine: (stream: CustomWritableStream, dir: Direction) => {
-    _readline.clearLine(stream as any, dir);
+    readline.clearLine(stream as any, dir);
   },
 };
 
-container.register("readline", readline);
+container.register("readline", _readline);
