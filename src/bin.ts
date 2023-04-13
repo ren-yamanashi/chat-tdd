@@ -1,5 +1,6 @@
 import { runTDD } from "./tddRunner";
-
+import "../src/infrastructure/fileSystem"
+import "../src/infrastructure/path"
 
 const [command, filePath] = process.argv.slice(2);
 

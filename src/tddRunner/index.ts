@@ -2,12 +2,14 @@ import { generateAnswer } from "../infrastructure/apis/generateAnswer";
 import { runRefactoringLoop } from "./generateCode/generateRefactoredCode";
 import { generateTestCode } from "./generateCode/generateTestCode";
 import { saveToFile } from "./fileSystem/saveToFile";
-import { path } from "../infrastructure/path";
 import { createLoading } from "../utils/load";
-import { useReadline } from "../infrastructure/readline";
+
 import { generateProgramCode } from "../tddRunner/generateCode/generateProgramCode";
 import { readConfigFile } from "../tddRunner/fileSystem/readConfigFile";
 import { readMarkdownFile } from "../tddRunner/fileSystem/readMarkdownFile";
+import { container } from "src/container";
+import { Path } from "src/interfaces/path";
+import { useReadline } from "src/utils/readline";
 
 /**
  * run tdd
@@ -19,7 +21,8 @@ import { readMarkdownFile } from "../tddRunner/fileSystem/readMarkdownFile";
  * 7. saveResponse to file
  */
 export const runTDD = async (filePath: string): Promise<void> => {
-  const CONFIG_FILE_PATH = "chatTdd.config.json"
+  const CONFIG_FILE_PATH = "chatTdd.config.json";
+  const path = container.resolve<Path>("path");
   const readline = useReadline();
   const { load } = createLoading(
     readline.cursorToBeginning,

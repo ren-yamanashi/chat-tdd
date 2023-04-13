@@ -1,36 +1,38 @@
 
 ```typescript
 function convertMillisecondsToText(milliseconds: number): string {
-  const years = Math.floor(milliseconds / 31536000000);
-  const months = Math.floor((milliseconds % 31536000000) / 2678400000);
-  const days = Math.floor((milliseconds % 2678400000) / 86400000);
-  const hours = Math.floor((milliseconds % 86400000) / 3600000);
-  const minutes = Math.floor((milliseconds % 3600000) / 60000);
-
-  let output = '';
-
+  const oneYearInMilliseconds = 31536000000;
+  const oneMonthInMilliseconds = 2678400000;
+  const oneDayInMilliseconds = 86400000;
+  const oneHourInMilliseconds = 3600000;
+  const oneMinuteInMilliseconds = 60000;
+  
+  const years = Math.floor(milliseconds / oneYearInMilliseconds);
+  const months = Math.floor((milliseconds % oneYearInMilliseconds) / oneMonthInMilliseconds);
+  const days = Math.floor((milliseconds % oneMonthInMilliseconds) / oneDayInMilliseconds);
+  const hours = Math.floor((milliseconds % oneDayInMilliseconds) / oneHourInMilliseconds);
+  const minutes = Math.floor((milliseconds % oneHourInMilliseconds) / oneMinuteInMilliseconds);
+  
+  let text = '';
   if (years > 0) {
-    output += `${years}年`;
+    text += `${years}年`;
   }
   if (months > 0) {
-    output += `${months}ヶ月`;
+    text += `${months}ヶ月`;
   }
   if (days > 0) {
-    output += `${days}日`;
+    text += `${days}日`;
   }
   if (hours > 0) {
-    output += `${hours}時間`;
-    if (minutes > 0) {
-      output += `${minutes}分`;
-    } else {
-      output += '0分';
-    }
-  } else if (minutes > 0) {
-    output += `${minutes}分`;
-  } else {
-    output += '0分';
+    text += `${hours}時間`;
   }
-
-  return output;
+  if (minutes > 0) {
+    text += `${minutes}分`;
+  }
+  if (minutes === 0 && hours === 0 && days === 0 && months === 0 && years === 0) {
+    text += '0分';
+  }
+  
+  return text;
 }
 ```

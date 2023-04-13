@@ -1,4 +1,4 @@
-type PathLike = string | Buffer | URL
+type PathLike = string | Buffer | URL;
 type BufferEncoding =
   | "ascii"
   | "utf8"
@@ -10,24 +10,24 @@ type BufferEncoding =
   | "latin1"
   | "binary"
   | "hex";
-
-export interface ReadFile {
-  (
-    path: PathLike,
-    options?: { encoding?: null; flag?: string | null }
-  ): Promise<Buffer>;
-  (
-    path: PathLike,
-    options: BufferEncoding | { encoding: BufferEncoding; flag?: string | null }
-  ): Promise<string>;
-}
+type WriteFileOptions = {
+  encoding?: BufferEncoding | null;
+  mode?: string | number;
+  flag?: string;
+};
 
 export interface FileSystem {
   lstat(path: string): Promise<{
     isFile(): boolean;
     isDirectory(): boolean;
   }>;
-  // TODO: any型の修正
-  readFile(path:PathLike,options?:BufferEncoding | null): Promise<string | Buffer>;
-  writeFile: any;
+  readFile(
+    path: PathLike,
+    options?: BufferEncoding | null
+  ): Promise<string | Buffer>;
+  writeFile: (
+    path: PathLike,
+    data: string | Uint8Array,
+    options?: WriteFileOptions
+  ) => Promise<void>;
 }

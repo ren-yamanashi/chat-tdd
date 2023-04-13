@@ -1,28 +1,29 @@
-import readline from "readline";
-import container from "../container";
-container.register("readline", readline);
-const $readline = container.resolve<typeof readline>("readline");
+import * as _readline from "readline";
+import {
+  CustomWritableStream,
+  Direction,
+  Readline,
+} from "src/interfaces/readline";
+import { container } from "../container";
 
-// TODO: di
-export const useReadline = () => {
-  const readline = $readline.createInterface({
+export const readline: Readline = {
+  createInterface: _readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-  });
-
-  const question = (query: string): Promise<string> =>
-    new Promise((resolve) => readline.question(query, resolve));
-
-  const cursorToBeginning = () => {
-    $readline.cursorTo(process.stdout, 0);
-  };
-  const clearCurrentLine = () => {
-    $readline.clearLine(process.stdout, 0);
-    $readline.cursorTo(process.stdout, 0);
-  };
-  return {
-    question,
-    cursorToBeginning,
-    clearCurrentLine,
-  };
+  }),
+  question: (
+    interfaceInstance: Readline["createInterface"],
+    query: string,
+    callback: (answer: string) => void
+  ) => {
+    interfaceInstance.question(query, callback);
+  },
+  cursorTo: (stream: CustomWritableStream, x: number, y?: number) => {
+    _readline.cursorTo(stream as any, x, y);
+  },
+  clearLine: (stream: CustomWritableStream, dir: Direction) => {
+    _readline.clearLine(stream as any, dir);
+  },
 };
+
+container.register("readline", readline);

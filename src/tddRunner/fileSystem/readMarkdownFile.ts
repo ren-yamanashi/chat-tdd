@@ -1,7 +1,10 @@
+import { container } from "src/container";
+import { FileSystem } from "src/interfaces/fileSystem";
 import { safeExecute } from "src/utils/safeExecute";
-import { fileSystem } from "../../infrastructure/fileSystem";
 
 export const readMarkdownFile = async (filePath: string) => {
+  const fs = container.resolve<FileSystem>("fs");
+
   if (!filePath) {
     console.error("Error: Please specify a file path.");
     process.exit(1);
@@ -10,7 +13,7 @@ export const readMarkdownFile = async (filePath: string) => {
   const { response } = await safeExecute<{
     isFile(): boolean;
     isDirectory(): boolean;
-  }>(() => fileSystem.lstat(filePath));
+  }>(() => fs.lstat(filePath));
 
   if (response?.isDirectory()) {
     console.error("Error: Please specify a Markdown file, not a directory.");
@@ -22,7 +25,7 @@ export const readMarkdownFile = async (filePath: string) => {
   }
 
   const { response: contents, error } = await safeExecute<string>(
-    () => fileSystem.readFile(filePath, "utf8") as Promise<string>
+    () => fs.readFile(filePath, "utf8") as Promise<string>
   );
 
   if (!contents) {

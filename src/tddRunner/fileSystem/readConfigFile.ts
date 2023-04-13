@@ -1,4 +1,5 @@
-import { fileSystem } from "../../infrastructure/fileSystem";
+import { container } from "src/container";
+import { FileSystem } from "src/interfaces/fileSystem";
 
 type Config = {
   testPackage: string;
@@ -14,10 +15,9 @@ export const isConfigObj = (arg: unknown): arg is Config =>
   typeof (arg as { outputDir: unknown }).outputDir === "string";
 
 export const readConfigFile = async (path: string): Promise<Config> => {
-  const configFile = (await fileSystem.readFile(
-    path,
-    "utf-8"
-  )) as string;
+  const fs = container.resolve<FileSystem>("fs");
+
+  const configFile = (await fs.readFile(path, "utf-8")) as string;
   const configObj: unknown = JSON.parse(configFile);
 
   if (!isConfigObj(configObj)) {

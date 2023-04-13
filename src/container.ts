@@ -1,18 +1,18 @@
 class DIContainer {
   private services: Map<string, any> = new Map();
 
-  register(name: string, instance: any): void {
-    this.services.set(name, instance);
+  register<T>(key: string, instance: T): void {
+    this.services.set(key, instance);
   }
 
-  resolve<T>(name: string): T {
-    const instance = this.services.get(name);
+  resolve<T>(key: string): T {
+    const instance = this.services.get(key);
     if (!instance) {
-      throw new Error(`Service "${name}" not found`);
+      throw new Error(`Service "${key}" not found`);
     }
     return instance as T;
   }
 }
 
-const container = new DIContainer();
-export default container;
+export const container = new DIContainer();
+
