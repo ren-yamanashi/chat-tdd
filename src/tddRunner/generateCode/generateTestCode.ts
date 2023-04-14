@@ -11,7 +11,7 @@ export const generateTestCode = async ({
   testPackage: string;
   markdownFileContent?: string;
 }): Promise<string> => {
-  // FIXME: プロンプトをよく考える
+  // TODO: プロンプトをよく考える
   const promptMarkdown = `以下のコードのテストコードを作成して下さい。\n
   プラットフォームはNode.jsをインストールしています。\n
   テストパッケージは${testPackage}をインストールしています。\n

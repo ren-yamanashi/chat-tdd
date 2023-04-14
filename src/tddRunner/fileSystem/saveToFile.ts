@@ -20,6 +20,7 @@ export const saveToFile = async (
       console.error(error);
       process.exit(1);
     }
+
     console.log(`Response saved to file: ${filePath}`);
   }
 };

@@ -5,10 +5,9 @@ export const generateProgramCode = async (
   load: <T>(asyncFunc: () => Promise<T>) => Promise<T>,
   contents: string
 ) => {
-  const generateAnswer =
-    container.resolve<API["generateAnswer"]>("generateAnswer");
+  const API = container.resolve<API>("API");
   const { response, error } = await safeExecute<string | Error>(() =>
-    load<string | Error>(() => generateAnswer(contents))
+    load<string | Error>(() => API.generateAnswer(contents))
   );
 
   if (!response) {
@@ -25,5 +24,6 @@ export const generateProgramCode = async (
   }
 
   console.log("[Code]\n", response);
+
   return response;
 };

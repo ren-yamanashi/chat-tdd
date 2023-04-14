@@ -19,12 +19,13 @@ import { API } from "src/interfaces/api";
  * 5. generate testCode
  * 6. execution test
  * 7. saveResponse to file
+ * 8. execute test
+ * 9. IF path test WHEN `fix program` code ELSE END
  */
 export const runTDD = async (filePath: string): Promise<void> => {
   const CONFIG_FILE_PATH = "chatTdd.config.json";
   const path = container.resolve<Path>("path");
-  const generateAnswer =
-    container.resolve<API["generateAnswer"]>("generateAnswer");
+  const API = container.resolve<API>("API");
   const readline = useReadline();
   const { load } = createLoading(
     readline.cursorToBeginning,
@@ -45,14 +46,14 @@ export const runTDD = async (filePath: string): Promise<void> => {
   const refactoredCode: string = await runRefactoringLoop({
     load,
     question: readline.question,
-    generateAnswer,
+    generateAnswer: API.generateAnswer,
     programCode,
   });
 
   /** generateTestCode */
   const testCode: string = await load<string>(() =>
     generateTestCode({
-      generateAnswer,
+      generateAnswer: API.generateAnswer,
       refactoredCode,
       testPackage,
       markdownFileContent,

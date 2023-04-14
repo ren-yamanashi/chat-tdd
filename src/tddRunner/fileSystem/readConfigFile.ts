@@ -6,16 +6,13 @@ type Config = {
   outputDir: string;
 };
 
-export const isConfigObj = (arg: unknown): arg is Config => {
-  return (
-    typeof arg === "object" &&
-    arg !== null &&
-    "testPackage" in arg &&
-    "outputDir" in arg &&
-    typeof (arg as { testPackage: unknown }).testPackage === "string" &&
-    typeof (arg as { outputDir: unknown }).outputDir === "string"
-  );
-};
+export const isConfigObj = (arg: unknown): arg is Config =>
+  typeof arg === "object" &&
+  arg !== null &&
+  "testPackage" in arg &&
+  "outputDir" in arg &&
+  typeof (arg as { testPackage: unknown }).testPackage === "string" &&
+  typeof (arg as { outputDir: unknown }).outputDir === "string";
 
 export const readConfigFile = async (path: string): Promise<Config> => {
   const fs = container.resolve<FileSystem>("fs");

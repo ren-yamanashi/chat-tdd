@@ -6,6 +6,11 @@ import { API } from "src/interfaces/api";
 import { container } from "src/container";
 dotenv.config();
 
+/**
+ * GPTに回答を要求
+ * @param prompt プロンプト
+ * @returns GPTからの回答
+ */
 export const generateAnswer: API["generateAnswer"] = async (
   prompt: string
 ): Promise<string | Error> => {
@@ -41,4 +46,4 @@ export const generateAnswer: API["generateAnswer"] = async (
   return concatenatedResponses;
 };
 
-container.register("generateAnswer", generateAnswer);
+container.register("API", { generateAnswer });

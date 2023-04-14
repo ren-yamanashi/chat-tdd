@@ -47,5 +47,6 @@ export const runRefactoringLoop = async ({
       console.log("[Refactored Code]\n", programCode);
     });
   }
+
   return programCode;
 };
