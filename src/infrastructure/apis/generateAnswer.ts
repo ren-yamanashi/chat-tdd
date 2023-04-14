@@ -18,8 +18,8 @@ export const generateAnswer: API["generateAnswer"] = async (
   const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY as string,
   });
+  
   const openai = new OpenAIApi(configuration);
-
   const { response, error } = await safeExecute(() =>
     openai.createCompletion({
       model: "text-davinci-003",

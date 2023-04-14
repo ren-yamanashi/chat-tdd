@@ -1,15 +1,18 @@
 import { safeExecute } from "../../utils/safeExecute";
 
+/**
+ * ユーザーが指定するまでリファクタリングを繰り返す
+ */
 export const runRefactoringLoop = async ({
-  load,
   question,
   generateAnswer,
   programCode,
+  load,
 }: {
-  load: <T>(asyncFunc: () => Promise<T>) => Promise<T>;
   question: (query: string) => Promise<string>;
   generateAnswer: (prompt: string) => Promise<string | Error>;
   programCode: string;
+  load?: <T>(asyncFunc: () => Promise<T>) => Promise<T>;
 }): Promise<string> => {
   while (true) {
     const { response } = await safeExecute(() =>
@@ -29,7 +32,9 @@ export const runRefactoringLoop = async ({
     const refactoringPrompt = `以下のコードを要件に合うようにリファクタリングしてください。\n\n${programCode}\n[要件]: ${refactoringMethod}`;
 
     await safeExecute(() =>
-      load<string | Error>(() => generateAnswer(refactoringPrompt))
+      load
+        ? load<string | Error>(() => generateAnswer(refactoringPrompt))
+        : generateAnswer(refactoringPrompt)
     ).then(({ response, error }) => {
       if (!response) {
         console.error("programCode is not defined");

@@ -1,13 +1,22 @@
 import { container } from "src/container";
 import { safeExecute } from "../../utils/safeExecute";
 import { API } from "src/interfaces/api";
+
+/**
+ * プロンプトに従ったプログラムコードの生成
+ * @param prompt (required)
+ * @param load (option): ローディング処理
+ */
 export const generateProgramCode = async (
-  load: <T>(asyncFunc: () => Promise<T>) => Promise<T>,
-  contents: string
-) => {
+  prompt: string,
+  load?: <T>(asyncFunc: () => Promise<T>) => Promise<T>
+): Promise<string> => {
   const API = container.resolve<API>("API");
+
   const { response, error } = await safeExecute<string | Error>(() =>
-    load<string | Error>(() => API.generateAnswer(contents))
+    load
+      ? load<string | Error>(() => API.generateAnswer(prompt))
+      : API.generateAnswer(prompt)
   );
 
   if (!response) {

@@ -1,7 +1,6 @@
 import { container } from "src/container";
 import { Readline } from "src/interfaces/readline";
 
-// TODO: 別ファイルに切り出し
 export const useReadline = () => {
   const readline = container.resolve<Readline>("readline");
 

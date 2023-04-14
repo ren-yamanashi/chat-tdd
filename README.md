@@ -4,27 +4,18 @@
 - OpenAI: https://openai.com
 
 ## package manager
-
 yarn
 
-## 📚 Development procedure
+## 開発手順
 
-1. Install package
-
+### 1. パッケージインストール
 ```bash
 yarn install
 ```
 
-2. Stat up (Either of the following)
-
-```bash
-yarn build       # normal
-yarn build:watch # tsc-watch
-```
-
-3. Setup `chatTdd.config.ts`
-
+### 2. Configファイルのセットアップ (`chatTdd.config.ts`)
 ```ts
+// chatTdd.config.ts
 // examples
 export default {
   openaiApiKey: your OPENAI_API_KEY,
@@ -33,23 +24,33 @@ export default {
 };
 ```
 
-4. execution Command
+### 3. ビルド
+```bash
+yarn build       # normal
+yarn build:watch # tsc-watch
+```
+
+### 4. 実行
 
 ```bash
-yarn start run-tdd < your prompt filePath >
+yarn start run-tdd `filepath`
+# example: `yarn start run-tdd ./examples/prompts/test.md`
 ```
+
 
 ## ディレクトリ構成
 ```
 src
-├── facade          // 複数のサブシステムを統合し、クライアントに対して単純化されたインターフェースを提供  (物として機能)
-├── fileSystem      // ファイル関連の機能を持つ 部品として機能
-├── generateCode    // コードを生成する機能を持つ 部品として機能
-├── infrastructure 
-│   └── apis
-├── interface
-└── utils           // 汎用的なコード utilsディレクトリは以下のファイルは、必ず機能ごとに分かれる
+├── __tests__       
+├── bin.ts          // メインファイル このファイルが実行される
+├── container.ts    // DIコンテナの定義ファイル
+├── infrastructure  // 必要なモジュールの提供 これはinterfaceに依存しており、DIコンテナに登録される。`tddRunner`ディレクトリから呼び出されることはない
+│   ├── apis
+├── interfaces
+├── tddRunner       // chat-tddの実態を構成するファイル このファイルでのみDIコンテナの呼び出し可能。`tddRunner`配下のディレクトリは部品。`index`ファイルは物(部品の合成)
+│   ├── fileSystem
+│   ├── generateCode
+│   └── index.ts
+└── utils           // ユーティリティ関数など
 ```
-
-## コーディング規約
 

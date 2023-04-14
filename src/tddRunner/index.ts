@@ -2,7 +2,6 @@ import { runRefactoringLoop } from "./generateCode/generateRefactoredCode";
 import { generateTestCode } from "./generateCode/generateTestCode";
 import { saveToFile } from "./fileSystem/saveToFile";
 import { createLoading } from "../utils/load";
-
 import { generateProgramCode } from "../tddRunner/generateCode/generateProgramCode";
 import { readConfigFile } from "../tddRunner/fileSystem/readConfigFile";
 import { readMarkdownFile } from "../tddRunner/fileSystem/readMarkdownFile";
@@ -13,14 +12,15 @@ import { API } from "src/interfaces/api";
 
 /**
  * run tdd
- * 1. read markdown
- * 2. send prompt
+ * 1. read config
+ * 2. read markdown
+ * 3. send prompt
  * 4. refactoring loop
  * 5. generate testCode
  * 6. execution test
  * 7. saveResponse to file
  * 8. execute test
- * 9. IF path test WHEN `fix program` code ELSE END
+ * 9. IF path test WHEN fix program code ELSE END
  */
 export const runTDD = async (filePath: string): Promise<void> => {
   const CONFIG_FILE_PATH = "chatTdd.config.json";
@@ -31,6 +31,8 @@ export const runTDD = async (filePath: string): Promise<void> => {
     readline.cursorToBeginning,
     readline.clearCurrentLine
   );
+
+  /** read config */
   const { testPackage, outputDir } = await readConfigFile(CONFIG_FILE_PATH);
 
   /** read markdown */
@@ -38,8 +40,8 @@ export const runTDD = async (filePath: string): Promise<void> => {
 
   /** send prompt */
   const programCode: string = await generateProgramCode(
-    load,
-    markdownFileContent
+    markdownFileContent,
+    load
   );
 
   /** refactoring loop */

@@ -2,7 +2,11 @@ import { container } from "src/container";
 import { FileSystem } from "src/interfaces/fileSystem";
 import { safeExecute } from "src/utils/safeExecute";
 
-export const readMarkdownFile = async (filePath: string) => {
+/**
+ * markdownファイルの読み込んで、文字列で返す
+ * @param filePath markdownファイルのパス 末尾は`.md`
+ */
+export const readMarkdownFile = async (filePath: string): Promise<string> => {
   const fs = container.resolve<FileSystem>("fs");
 
   if (!filePath) {
